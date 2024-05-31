@@ -1,6 +1,71 @@
-﻿IncidentID,Date,Type,Severity,Description,Status
-1,1/15/2023,Phishing,High,Phishing email targeting company employees,Pending
-2,1/20/2023,Malware,Medium,Malware detected on employee workstation,Pending
-3,2/5/2023,Ransomware,Critical,Ransomware attack encrypting company data,Pending
-4,3/10/2023,Phishing,Low,Phishing email targeting external customers,Pending
-5,3/15/2023,Data Breach,Critical,Sensitive data leaked from database,Pending
+# Import CSV
+import csv
+
+# Data to write to CSV
+security_incidents = [
+    ["IncidentID", "Date", "Type", "Severity", "Description", "Status"],
+    ["1", "01/15/2023", "Phishing", "High", "Phishing email targeting company employees", "Pending"],
+    ["2", "01/20/2023", "Malware", "Medium", "Malware detected on employee workstation", "Pending"],
+    ["3", "02/05/2023", "Ransomware", "Critical", "Ransomware attack encrypting company data", "Pending"],
+    ["4", "03/10/2023", "Phishing", "High", "Phishing email targeting external customers", "Pending"],
+    ["5", "03/15/2023", "Data Breach", "Critical", "Sensitive data leaked from database", "Pending"]
+]
+
+# Write to security_incidents.csv
+with open('security_incidents.csv', mode='w',newline='') as file:
+    writer = csv.writer(file)
+    writer.writerows(security_incidents)
+    
+# Read from security_incidents.csv
+def read_csv(file_path):
+    try:
+        with open('security_incidents.csv', mode='r') as file:
+            reader = csv.reader(file)
+            data = [row for row in reader]
+        return data
+    except Exception as e:
+        print("Error reading the file {file_path}: {e}")
+        return None
+
+# Function to add "Status" column with value "Pending"
+def status_column(data, status_value="Pending"):
+    if not data:
+        print("No data to process.")
+        return data
+    
+    # Add the header for the new column
+    data[0].append('Status')
+    
+    # Add the default value to each row
+    for row in data[1:]:
+        row.append(status_value)
+    
+    return data    
+
+# Function to write modified file
+def write_csv(file_path, data):
+    try:
+        with open(file_path, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+    except Exception as e:
+        print("Error in writing to file {filepath}: {e}")
+
+# Function to process security incidents
+def process_security_incidents(input_file, output_file):
+    data = read_csv(input_file)
+    if data:
+        modified_data = status_column(data)
+        write_csv(output_file, modified_data)
+
+# Main block to execute the functions
+if __name__ == "__main__":
+    input_file = 'security_incidents.csv'
+    output_file = 'security_incidents_modified.csv'
+    process_security_incidents(input_file, output_file)
+
+    # Read and print the modified CSV file
+    modified_data = read_csv(output_file)
+    if modified_data:
+        for row in modified_data:
+            print(row)
